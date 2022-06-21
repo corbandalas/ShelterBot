@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mvn package
+cd target
+aws lambda update-function-code --function-name ShelterBot --zip-file fileb://shelterbot-0.1.jar
