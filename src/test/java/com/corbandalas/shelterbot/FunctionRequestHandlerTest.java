@@ -154,7 +154,6 @@ public class FunctionRequestHandlerTest {
                 .queryParam("zoom", "14")
                 .queryParam("size", "600x600")
                 .queryParam("markers", "сolor:blue|label:S|48.015474,37.807135", "size:tiny|label:S|48.016673,37.806802")
-                .queryParam("key", "AIzaSyAxwr9lTrlO56R_wB0swlS-WDgb1cpGN6c")
                 .build());
 
         URI uri = of.build();
