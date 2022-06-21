@@ -1,27 +1,19 @@
-## Micronaut 3.5.1 Documentation
+## ShelterBot 1.0.0 Documentation
 
-- [User Guide](https://docs.micronaut.io/3.5.1/guide/index.html)
-- [API Reference](https://docs.micronaut.io/3.5.1/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/3.5.1/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
+Telegram bot for discovering nearest bomb shelters in your place.
 
-## Handler
+Technology stack:
 
-[AWS Lambda Handler](https://docs.aws.amazon.com/lambda/latest/dg/java-handler.html)
+- Micronaut(CORE, AWS Lambda)
 
-Handler: io.micronaut.function.aws.proxy.MicronautLambdaHandler
+API used:
 
-
-## Feature aws-lambda documentation
-
-- [Micronaut AWS Lambda Function documentation](https://micronaut-projects.github.io/micronaut-aws/latest/guide/index.html#lambda)
+- AWS SDK2(Lambda function, S3)
+- Telegram SDK
+- Google Geocoding API
+- Google Static MAP API
+- Yandex Geocoding API
 
 
-## Feature microstream documentation
-
-- [Micronaut MicroStream documentation](https://micronaut-projects.github.io/micronaut-microstream/latest/guide)
-
-- [https://microstream.one/](https://microstream.one/)
 
 
