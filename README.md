@@ -63,18 +63,20 @@ Create google dev map account and specify API key in YANDEXGEOKEY env var. We us
 Shelters CSV files per city are stored in resource/shelter folder. Please look at data file mapping in the application.yml:
 
 shelterbot:
+
   db:
+  
     defaultCountry: ДНР
+    
     defaultRegion: Донецкая
+    
     shelters:
+    
       ДНР-Донецкая-Андреевка: 1.csv
+      
       ДНР-Донецкая-Донецк: 2.csv
-      ДНР-Донецкая-Еленовка: 3.csv
-      ДНР-Донецкая-Любовка: 4.csv
-      ДНР-Донецкая-Моспино: 5.csv
-      ДНР-Донецкая-Александровка: 6.csv
-      ДНР-Донецкая-Луганское: 7.csv
-      ДНР-Донецкая-Горловка: 8.csv
+      
+      ....
 
 where e.g  ДНР-Донецкая-Андреевка: 1.csv means that ДНР - is country name, Донецкая - is region, Андреевка is name of city.
 
