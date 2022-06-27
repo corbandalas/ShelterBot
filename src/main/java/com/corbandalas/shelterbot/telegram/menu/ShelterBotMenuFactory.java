@@ -9,7 +9,9 @@ import jakarta.inject.Singleton;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -18,6 +20,8 @@ public class ShelterBotMenuFactory {
 
     @Inject
     private List<ShelterMenuConstructor> menuConstructorBeansList;
+
+    private Map<ShelterBotStateEnum, ShelterMenuConstructor> menuObjectCache = new HashMap<>();
 
 
     public PartialBotApiMethod menu(Update update, ShelterBotState shelterBotState) {
@@ -34,19 +38,30 @@ public class ShelterBotMenuFactory {
 
     private ShelterMenuConstructor getMenuConstructorBean(ShelterBotStateEnum shelterBotState) {
 
-        Set<Class<?>> annotatedClasses = ShelterBotUtils.getAnnotatedClasses("com.corbandalas.shelterbot.telegram.menu.constructor", ShelterBotMenuConstructorType.class);
+        ShelterMenuConstructor shelterMenuConstructor = menuObjectCache.get(shelterBotState);
 
-        for (Class classValue : annotatedClasses) {
+        if (shelterMenuConstructor == null) {
+            Set<Class<?>> annotatedClasses = ShelterBotUtils.getAnnotatedClasses("com.corbandalas.shelterbot.telegram.menu.constructor", ShelterBotMenuConstructorType.class);
 
-            ShelterBotMenuConstructorType annotation = (ShelterBotMenuConstructorType) classValue
-                    .getAnnotation(ShelterBotMenuConstructorType.class);
+            for (Class classValue : annotatedClasses) {
 
-            if (shelterBotState.equals(annotation.type())) {
+                ShelterBotMenuConstructorType annotation = (ShelterBotMenuConstructorType) classValue
+                        .getAnnotation(ShelterBotMenuConstructorType.class);
 
-                return menuConstructorBeansList.stream().filter(t -> t.getClass().getName().equals(classValue.getName()))
-                        .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find menu constructor bean"));
+                if (shelterBotState.equals(annotation.type())) {
+
+                    ShelterMenuConstructor shelterMenuConstructorReflection = menuConstructorBeansList.stream().filter(t -> t.getClass().getName().equals(classValue.getName()))
+                            .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find menu constructor bean"));
+
+                    menuObjectCache.put(shelterBotState, shelterMenuConstructorReflection);
+
+                    return shelterMenuConstructorReflection;
+                }
             }
+        } else {
+            return shelterMenuConstructor;
         }
+
 
         throw new IllegalStateException("Cannot find menu constructor bean");
     }
