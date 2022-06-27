@@ -2,6 +2,10 @@
 
 Telegram bot for discovering nearest bomb shelters in your place.
 
+See it in work:
+
+https://t.me/shelter_bomb_bot
+
 Technology stack:
 
 - Micronaut(CORE, AWS Lambda)
