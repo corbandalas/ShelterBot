@@ -20,29 +20,6 @@ public class FunctionRequestHandler extends MicronautRequestHandler<APIGatewayPr
     @Inject
     private ShelterBotMenuProcessor shelterBotMenuProcessor;
 
-
-
-    //    "message":
-//    {
-//        "message_id": 24,
-//            "from": {
-//        "id": 151800231,
-//                "is_bot": false,
-//                "first_name": "corbandalas",
-//                "username": "corbandalas",
-//                "language_code": "ru"
-//    },
-//        "chat": {
-//        "id": 151800231,
-//                "first_name": "corbandalas",
-//                "username": "corbandalas",
-//                "type": "private"
-//    },
-//        "date": 1655034125,
-//            "text": "test"
-//    }
-//}
-//
     @Override
     public APIGatewayProxyResponseEvent execute(APIGatewayProxyRequestEvent input) {
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent();
@@ -51,6 +28,7 @@ public class FunctionRequestHandler extends MicronautRequestHandler<APIGatewayPr
             Update update = objectMapper.readValue(input.getBody(), Update.class);
 
             log.info(update.toString());
+            log.info("Update text: " + update.getMessage().getText());
 
             shelterBotMenuProcessor.process(update);
 

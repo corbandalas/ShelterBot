@@ -2,6 +2,8 @@ package com.corbandalas.shelterbot.telegram.menu;
 
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -13,11 +15,13 @@ import java.util.List;
 
 import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.*;
 
+@Slf4j
 @Singleton
-public class MainMenuConstructor implements ShelterMenuConstructor {
+public class SearchEnterTextMenuConstructor implements ShelterMenuConstructor {
+
 
     @Override
-    public SendMessage menuConstruct(Update update, ShelterBotState shelterBotState) {
+    public PartialBotApiMethod menuConstruct(Update update, ShelterBotState shelterBotState) {
 
         // Создаем клавиуатуру
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -28,30 +32,17 @@ public class MainMenuConstructor implements ShelterMenuConstructor {
         // Создаем список строк клавиатуры
         List<KeyboardRow> keyboard = new ArrayList<>();
 
-        // Первая строчка клавиатуры
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
-        // Добавляем кнопки в первую строчку клавиатуры
-        keyboardFirstRow.add(new KeyboardButton(MAIN_MENU_OPTION1));
+        KeyboardRow backRow = new KeyboardRow();
+        backRow.add(new KeyboardButton(BACK));
+        backRow.add(new KeyboardButton(SEARCH_CAPTION));
 
-
-        KeyboardButton keyboardButton = new KeyboardButton(MAIN_MENU_OPTION2);
-        keyboardButton.setRequestLocation(true);
-        keyboardFirstRow.add(keyboardButton);
-
-        KeyboardRow keyBoardSecondRow = new KeyboardRow();
-        // Добавляем кнопки в первую строчку клавиатуры
-        keyBoardSecondRow.add(new KeyboardButton(MAIN_MENU_OPTION3));
-
-        keyboard.add(keyboardFirstRow);
-        keyboard.add(keyBoardSecondRow);
+        keyboard.add(backRow);
 
         replyKeyboardMarkup.setKeyboard(keyboard);
 
         return SendMessage.builder()
                 .chatId("" + update.getMessage().getChatId())
-                .text(update.getMessage().getFrom().getFirstName() + CHOOSE_CAPTION)
+                .text(SEARCH_TITLE)
                 .replyMarkup(replyKeyboardMarkup).build();
     }
-
-
 }

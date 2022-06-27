@@ -6,8 +6,10 @@ import com.corbandalas.shelterbot.geocode.google.dto.GoogleGeoCoderResponse;
 import com.corbandalas.shelterbot.geocode.yandex.YandexGeoCoder;
 import com.corbandalas.shelterbot.geocode.yandex.dto.Point__1;
 import com.corbandalas.shelterbot.geocode.yandex.dto.YandexGeoCoderResponse;
+import com.corbandalas.shelterbot.model.City;
 import com.corbandalas.shelterbot.model.Country;
 import com.corbandalas.shelterbot.model.Storage;
+import com.corbandalas.shelterbot.repository.CityRepository;
 import com.corbandalas.shelterbot.utils.ShelterBotUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.http.uri.UriBuilder;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.Set;
 
 public class FunctionRequestHandlerTest {
@@ -75,7 +78,7 @@ public class FunctionRequestHandlerTest {
 //        Transliterator toLatinTrans = Transliterator.getInstance(CYRILLIC_TO_LATIN);
 //        String result = toLatinTrans.transliterate(st);
 //        System.out.println(result);
-        String address = "Донецкая область Моспино ул. Ново-Моспино, 20";
+//        String address = "Донецкая область Моспино ул. Ново-Моспино, 20";
 
 //        GoogleGeoCoder googleGeoCoder = handler.getApplicationContext().getBean(GoogleGeoCoder.class);
 //        String geocode = googleGeoCoder.reverseGeocode("37.843328" ,"48.001657");
@@ -84,7 +87,7 @@ public class FunctionRequestHandlerTest {
 //        System.out.println("Google:" + geocode);
 
 
-        Double aDouble = ShelterBotUtils.haversineDistance(new Double(48.001657), new Double(37.843328), new Double(48.01690), new Double(37.78967));
+//        Double aDouble = ShelterBotUtils.haversineDistance(new Double(48.001657), new Double(37.843328), new Double(48.01690), new Double(37.78967));
 
 //        YandexGeoCoder yandexGeoCoder = handler.getApplicationContext().getBean(YandexGeoCoder.class);
 //        geocode = yandexGeoCoder.geocode(address);
@@ -92,7 +95,7 @@ public class FunctionRequestHandlerTest {
 
 //        Point__1 point = yandexGeoCoderResponse.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getPoint();
 
-        System.out.println(aDouble);
+//        System.out.println(aDouble);
 //
         //
 
@@ -110,20 +113,24 @@ public class FunctionRequestHandlerTest {
 //        String shelterCapacity = split[5];
 //        String shelterDescription = split[6];
 
-//        YandexGeoCoder yandexGeoCoder = handler.getApplicationContext().getBean(YandexGeoCoder.class);
+        YandexGeoCoder yandexGeoCoder = handler.getApplicationContext().getBean(YandexGeoCoder.class);
 
-        root.stream().forEach(c -> c.getRegions().stream().
-                forEach(region -> region.getCities().stream()
-                        .forEach(city -> city.getDistricts().stream()
-                                .forEach(district -> district.getShelters().stream().forEach(shelter -> {
+        CityRepository cityRepository = handler.getApplicationContext().getBean(CityRepository.class);
 
-                                    Double distance = ShelterBotUtils.haversineDistance(new Double(48.001657), new Double(37.843328), Double.parseDouble(shelter.getLat()), Double.parseDouble(shelter.getLng()));
+        Optional<City> horlovkaCity = cityRepository.getCity("Горловка", "Донецкая", "ДНР");
 
-                                    if (distance < 3.0) {
-                                        System.out.println(shelter.getAddress());
-                                    }
-
-
+//        root.stream().forEach(c -> c.getRegions().stream().
+//                forEach(region -> region.getCities().stream()
+//                        .forEach(city -> city.getDistricts().stream()
+//                                .forEach(district -> district.getShelters().stream().forEach(shelter -> {
+//
+////                                    Double distance = ShelterBotUtils.haversineDistance(new Double(48.001657), new Double(37.843328), Double.parseDouble(shelter.getLat()), Double.parseDouble(shelter.getLng()));
+////
+////                                    if (distance < 3.0) {
+////                                        System.out.println(shelter.getAddress());
+////                                    }
+//
+//
 //                                    String lat = "";
 //                                    String lng = "";
 //
@@ -141,23 +148,47 @@ public class FunctionRequestHandlerTest {
 //                                    } catch (Exception e) {
 //                                        e.printStackTrace();
 //                                    }
+////
+//                                    System.out.println(district.getName() + ";" + shelter.getOwner() + ";" + shelter.getAddress() + ";" +
+//                                            shelter.getResponsible() + ";" +
+//                                            shelter.getCapacity() + ";" + shelter.getDescription() + ";" + coord + ";");
+//                                })))));
+
+
+//                        horlovkaCity.get().getDistricts().stream()
+//                                .forEach(district -> district.getShelters().stream().forEach(shelter -> {
+//
+//                                    Double distance = ShelterBotUtils.haversineDistance(new Double(48.001657), new Double(37.843328), Double.parseDouble(shelter.getLat()), Double.parseDouble(shelter.getLng()));
+//
+//                                    if (distance < 3.0) {
+//                                        System.out.println(shelter.getAddress());
+//                                    }
+//
+//
+//                                    String lat = "";
+//                                    String lng = "";
+//
+//                                    String coord = "";
+//                                    try {
+//                                        String geocode = yandexGeoCoder.geocode("Донецкая область " + horlovkaCity.get().getName() + " " + shelter.getAddress());
+//                                        YandexGeoCoderResponse yandexGeoCoderResponse = objectMapper.readValue(geocode, YandexGeoCoderResponse.class);
+//
+//                                        Point__1 point = yandexGeoCoderResponse.getResponse().getGeoObjectCollection().getFeatureMember().get(0).getGeoObject().getPoint();
+//
+//                                        coord = point.getPos();
+//
+//
+//
+//                                    } catch (Exception e) {
+//                                        e.printStackTrace();
+//                                    }
 
 //                                    System.out.println(district.getName() + ";" + shelter.getOwner() + ";" + shelter.getAddress() + ";" +
 //                                            shelter.getResponsible() + ";" +
-//                                            shelter.getCapacity() + ";" + shelter.getDescription() + ";" + distance + ";");
-                                })))));
+//                                            shelter.getCapacity() + ";" + shelter.getDescription() + ";" + coord + ";");
+//                                }));
 
         System.out.println("");
 
-        UriBuilder of = UriBuilder.of(UriBuilder.of("https://maps.googleapis.com/maps/api/staticmap")
-                .queryParam("center", "48.016949,37.789687")
-                .queryParam("zoom", "14")
-                .queryParam("size", "600x600")
-                .queryParam("markers", "сolor:blue|label:S|48.015474,37.807135", "size:tiny|label:S|48.016673,37.806802")
-                .build());
-
-        URI uri = of.build();
-
-        System.out.println(uri);
     }
 }

@@ -27,6 +27,12 @@ public class ShelterBotMenuFactory {
     private AboutMenuConstructor aboutMenuConstructor;
     @Inject
     private HelpMenuConstructor helpMenuConstructor;
+    @Inject
+    private ShowRulesMenuConstructor showRulesMenuConstructor;
+    @Inject
+    private SearchEnterTextMenuConstructor searchEnterTextMenuConstructor;
+    @Inject
+    private SearchShowResultMenuConstructor searchShowResultMenuConstructor;
 
     public PartialBotApiMethod menu(Update update, ShelterBotState shelterBotState) {
 
@@ -59,6 +65,19 @@ public class ShelterBotMenuFactory {
 
         if (shelterBotState.getState().equals(SHOW_SHELTERS_ON_MAP_BY_GPS)) {
             return showSheltersOnMapMenuConstructor.menuConstruct(update, shelterBotState);
+        }
+
+        if (shelterBotState.getState().equals(SHOW_RULE)) {
+
+            return showRulesMenuConstructor.menuConstruct(update, shelterBotState);
+        }
+
+        if (shelterBotState.getState().equals(SEARCH_ENTER)) {
+            return searchEnterTextMenuConstructor.menuConstruct(update, shelterBotState);
+        }
+
+        if (shelterBotState.getState().equals(SEARCH_RESULT)) {
+            return searchShowResultMenuConstructor.menuConstruct(update, shelterBotState);
         }
 
         throw new IllegalStateException("Wrong telegram bot state");

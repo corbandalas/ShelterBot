@@ -132,7 +132,7 @@ public class ShowSheltersListByGPSMenuConstructor implements ShelterMenuConstruc
             AtomicInteger index = new AtomicInteger();
             index.set(0);
 
-            address = sheltersAround.map(shelters -> shelters.stream().map(shelter -> index.incrementAndGet() + ". " + shelter.getAddress() + " (" + shelter.getCapacity() + " мест) " + shelter.getResponsible() + " " + shelter.getDescription())
+            address = sheltersAround.map(shelters -> shelters.stream().map(shelter -> index.incrementAndGet() + ". " + printShelterEntry(shelter))
                     .collect(Collectors.joining("\n\n"))).orElse(NOT_SHELTERS_AROUND);
 
             index.set(0);
@@ -180,7 +180,7 @@ public class ShowSheltersListByGPSMenuConstructor implements ShelterMenuConstruc
                 .flatMap(district -> shelterRepository.getSheltersByDistrict(district))
                 .map(shelters -> shelters.stream()
                         .filter(sh -> ShelterBotUtils.haversineDistance(location.getLatitude(), location.getLongitude(),
-                                Double.parseDouble(sh.getLat()), Double.parseDouble(sh.getLng())) < radius).sorted((sh1, sh2)->ShelterBotUtils.haversineDistance(location.getLatitude(), location.getLongitude(),
+                                Double.parseDouble(sh.getLat()), Double.parseDouble(sh.getLng())) < radius).sorted((sh1, sh2) -> ShelterBotUtils.haversineDistance(location.getLatitude(), location.getLongitude(),
                                 Double.parseDouble(sh1.getLat()), Double.parseDouble(sh1.getLng())).compareTo(ShelterBotUtils.haversineDistance(location.getLatitude(), location.getLongitude(),
                                 Double.parseDouble(sh2.getLat()), Double.parseDouble(sh2.getLng())))).limit(10)
                         .collect(Collectors.toList()));

@@ -10,5 +10,8 @@ public enum ShelterBotStateEnum {
     SHOW_SHELTERS_BY_GPS,
     SHOW_SHELTERS_ON_MAP_BY_GPS,
     ABOUT,
-    HELP
+    HELP,
+    SHOW_RULE,
+    SEARCH_ENTER,
+    SEARCH_RESULT
 }

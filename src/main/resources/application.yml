@@ -4,9 +4,9 @@ micronaut:
 
 telegram:
   bot:
-    name: shelter_bomb_bot
-    token: XXX
-    path: https://lojdk8ysb2.execute-api.us-east-1.amazonaws.com/default/ShelterBot
+    name: ${TELEGRAMBOTNAME}
+    token: ${TELEGRAMBOTTOKEN}
+    path: ${TELEGRAMBOTPATH}
 
 
 shelterbot:
@@ -21,6 +21,7 @@ shelterbot:
       ДНР-Донецкая-Моспино: 5.csv
       ДНР-Донецкая-Александровка: 6.csv
       ДНР-Донецкая-Луганское: 7.csv
+      ДНР-Донецкая-Горловка: 8.csv
   menu:
     perpage: 10
 
@@ -28,16 +29,16 @@ shelterbot:
 
 
 aws:
-  accessKeyId: AKIASIGXA7LONCGDDXOE
-  secretKey: XXXX
-  region: us-east-1
+  accessKeyId: ${AWSACCESSKEYID}
+  secretKey: ${AWSSECRETKEY}
+  region: ${AWSREGION}
   s3:
-    botstate-bucket: shelterbot
+    botstate-bucket: ${AWSBUCKET}
 
 yandex:
   geo:
-    key: XXXX
+    key: ${YANDEXGEOKEY}
 
 google:
   geo:
-    key: XXXXX
+    key: ${GOOGLEGEOKEY}

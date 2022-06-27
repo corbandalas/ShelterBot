@@ -4,16 +4,20 @@ public class ShelterBotTexts {
 
     public static final String MAIN_MENU_OPTION1 = "\uD83D\uDCA3 Список убежищ";
     public static final String MAIN_MENU_OPTION2 = "\uD83D\uDCE1 Убежища рядом";
+    public static final String MAIN_MENU_OPTION3 = "‼️ Правила при обстреле";
     public static final String CHOOSE_CAPTION =  ", выберите действие";
     public static final String CHOOSE_CITY_CAPTION =  ", выберите город";
     public static final String CHOOSE_DISTRICT_CAPTION =  ", выберите район";
     public static final String CHOOSE_SHELTER_CAPTION =  ", выберите убежище";
+    public static final String SEARCH_TITLE =  "Введите название улицы для поиска убежищ";
+    public static final String SEARCH_CAPTION =  "Поиск по улицам";
     public static final String BACK =  "\uD83D\uDD19 Назад";
     public static final String ASK_FOR_GPS_CAPTION =  "Координаты";
     public static final String GOODBYE_CAPTION =  ", до свидания!";
     public static final String BACK_MAIN_MANU =  "Главное меню";
     public static final String NEXT_PAGE =  "➡️ Следующая страница";
     public static final String PREV_PAGE =  "⬅️ Предыдущая страница";
+    public static final String FIND =  "\uD83D\uDD0E Поиск по улицам";
     public static final String NOT_SHELTERS_AROUND =  "Поблизости с вами нет убежищ";
     public static final String SHOW_ON_MAP =  "\uD83D\uDDFA️ Показать на карте";
     public static final String ABOUT_TEXT =  "@shelter_bomb_bot v1.0.0 \n\nЧат-бот для показа бомбоубежищ Донецкой Народной Республики.\n\n" +
