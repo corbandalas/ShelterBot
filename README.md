@@ -23,13 +23,21 @@ Shelter bot requires the following services:
 Create new function in AWS console(choose Java 11 as runtime and specify com.corbandalas.shelterbot.FunctionRequestHandler as handler). In configuration tab specify the following environment vars:
 
 AWSACCESSKEYID	Access key for AWS account
+
 AWSBUCKET	Name of S3 bucket for shelter bot storage
+
 AWSREGION	Lambda region name
+
 AWSSECRETKEY	AWS account secret key
+
 GOOGLEGEOKEY	Access key for google geo coding API
+
 TELEGRAMBOTNAME	name of your telegram bot
+
 TELEGRAMBOTPATH	API gateway name of your AWS lambda function configured as telegram bot notification URL
+
 TELEGRAMBOTTOKEN	Token of your telegram bot
+
 YANDEXGEOKEY	Access key for yandex geo coding API
 
 - AWS S3
