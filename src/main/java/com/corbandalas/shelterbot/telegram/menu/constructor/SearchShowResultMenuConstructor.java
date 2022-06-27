@@ -1,10 +1,10 @@
-package com.corbandalas.shelterbot.telegram.menu;
+package com.corbandalas.shelterbot.telegram.menu.constructor;
 
-import com.corbandalas.shelterbot.model.District;
 import com.corbandalas.shelterbot.model.Shelter;
 import com.corbandalas.shelterbot.repository.DistrictRepository;
 import com.corbandalas.shelterbot.repository.ShelterRepository;
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
+import com.corbandalas.shelterbot.telegram.menu.ShelterBotMenuConstructorType;
 import io.micronaut.context.env.Environment;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -16,12 +16,17 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.*;
+import static com.corbandalas.shelterbot.telegram.ShelterBotStateEnum.SEARCH_RESULT;
+import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.BACK;
 
 @Slf4j
 @Singleton
+@ShelterBotMenuConstructorType(type = SEARCH_RESULT)
 public class SearchShowResultMenuConstructor implements ShelterMenuConstructor {
 
     @Inject

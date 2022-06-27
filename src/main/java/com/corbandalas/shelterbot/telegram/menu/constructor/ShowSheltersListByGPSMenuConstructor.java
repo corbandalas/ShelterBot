@@ -1,4 +1,4 @@
-package com.corbandalas.shelterbot.telegram.menu;
+package com.corbandalas.shelterbot.telegram.menu.constructor;
 
 import com.corbandalas.shelterbot.geocode.GeoCoder;
 import com.corbandalas.shelterbot.geocode.yandex.dto.Component;
@@ -10,6 +10,7 @@ import com.corbandalas.shelterbot.repository.DistrictRepository;
 import com.corbandalas.shelterbot.repository.ShelterRepository;
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
 import com.corbandalas.shelterbot.telegram.ShelterBotStateStorage;
+import com.corbandalas.shelterbot.telegram.menu.ShelterBotMenuConstructorType;
 import com.corbandalas.shelterbot.utils.ShelterBotUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.context.env.Environment;
@@ -31,10 +32,12 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static com.corbandalas.shelterbot.telegram.ShelterBotStateEnum.SHOW_SHELTERS_BY_GPS;
 import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.*;
 
 @Slf4j
 @Singleton
+@ShelterBotMenuConstructorType(type = SHOW_SHELTERS_BY_GPS)
 public class ShowSheltersListByGPSMenuConstructor implements ShelterMenuConstructor {
 
     @Inject

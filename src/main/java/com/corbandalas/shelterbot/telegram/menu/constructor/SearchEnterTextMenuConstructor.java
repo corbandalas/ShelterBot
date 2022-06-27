@@ -1,6 +1,7 @@
-package com.corbandalas.shelterbot.telegram.menu;
+package com.corbandalas.shelterbot.telegram.menu.constructor;
 
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
+import com.corbandalas.shelterbot.telegram.menu.ShelterBotMenuConstructorType;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -13,11 +14,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.corbandalas.shelterbot.telegram.ShelterBotStateEnum.SEARCH_ENTER;
 import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.*;
 
 @Slf4j
 @Singleton
-public class HelpMenuConstructor implements ShelterMenuConstructor {
+@ShelterBotMenuConstructorType(type = SEARCH_ENTER)
+public class SearchEnterTextMenuConstructor implements ShelterMenuConstructor {
 
 
     @Override
@@ -34,6 +37,7 @@ public class HelpMenuConstructor implements ShelterMenuConstructor {
 
         KeyboardRow backRow = new KeyboardRow();
         backRow.add(new KeyboardButton(BACK));
+        backRow.add(new KeyboardButton(SEARCH_CAPTION));
 
         keyboard.add(backRow);
 
@@ -41,7 +45,7 @@ public class HelpMenuConstructor implements ShelterMenuConstructor {
 
         return SendMessage.builder()
                 .chatId("" + update.getMessage().getChatId())
-                .text(HELP_TEXT)
+                .text(SEARCH_TITLE)
                 .replyMarkup(replyKeyboardMarkup).build();
     }
 }

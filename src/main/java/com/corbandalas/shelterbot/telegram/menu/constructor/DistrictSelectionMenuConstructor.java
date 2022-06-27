@@ -1,9 +1,9 @@
-package com.corbandalas.shelterbot.telegram.menu;
+package com.corbandalas.shelterbot.telegram.menu.constructor;
 
-import com.corbandalas.shelterbot.model.Shelter;
+import com.corbandalas.shelterbot.model.District;
 import com.corbandalas.shelterbot.repository.DistrictRepository;
-import com.corbandalas.shelterbot.repository.ShelterRepository;
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
+import com.corbandalas.shelterbot.telegram.menu.ShelterBotMenuConstructorType;
 import io.micronaut.context.env.Environment;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -18,19 +18,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.*;
+import static com.corbandalas.shelterbot.telegram.ShelterBotStateEnum.DISTRICT_CHOOSE;
+import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.BACK;
+import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.CHOOSE_DISTRICT_CAPTION;
 
 @Singleton
-public class ShowDistrictSheltersMenuConstructor implements ShelterMenuConstructor {
+@ShelterBotMenuConstructorType(type = DISTRICT_CHOOSE)
+public class DistrictSelectionMenuConstructor implements ShelterMenuConstructor {
 
     @Inject
     private Environment environment;
 
     @Inject
     private DistrictRepository districtRepository;
-
-    @Inject
-    private ShelterRepository shelterRepository;
 
     @Override
     public SendMessage menuConstruct(Update update, ShelterBotState shelterBotState) {
@@ -39,21 +39,9 @@ public class ShowDistrictSheltersMenuConstructor implements ShelterMenuConstruct
         String defaultCountryName = environment.getProperty("shelterbot.db.defaultCountry", String.class).orElse("ДНР");
         String defaultRegionName = environment.getProperty("shelterbot.db.defaultRegion", String.class).orElse("Донбасс");
 
-        String cityName = shelterBotState.getData().get("city");
-        String districtName = shelterBotState.getData().get("district");
-        int offset = Integer.parseInt(shelterBotState.getData().get("offset"));
+        String city = shelterBotState.getData().get("city");
 
-        Set<Shelter> shelters = districtRepository.getDistrictsByCity(cityName, defaultRegionName, defaultCountryName)
-                .flatMap(districts -> districts.stream().filter(d -> d.getName().equalsIgnoreCase(districtName)).findFirst())
-                .flatMap(district -> shelterRepository.getSheltersByDistrict(district)).orElse(new HashSet<>());
-
-        StringBuilder text = new StringBuilder(districtName).append("\n\n");
-
-        int offsetInc = Integer.parseInt(environment.getProperty("shelterbot.menu.perpage", String.class).orElse("10"));
-
-        shelters.stream().skip(offset).limit(offsetInc).forEach(shelter -> text
-                .append(printShelterEntry(shelter))
-                .append("\n\n"));
+        Set<District> districtsByCity = districtRepository.getDistrictsByCity(city, defaultRegionName, defaultCountryName).orElse(new HashSet<>());
 
         // Создаем клавиуатуру
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -61,26 +49,36 @@ public class ShowDistrictSheltersMenuConstructor implements ShelterMenuConstruct
         replyKeyboardMarkup.setResizeKeyboard(true);
         replyKeyboardMarkup.setOneTimeKeyboard(false);
 
+
+        int rowSize = 1;
+        if (districtsByCity.size() > 0) {
+            rowSize = districtsByCity.size() / MAX_BUTTON_ENTRIES_PER_ROW + 1;
+        }
+
         // Создаем список строк клавиатуры
-        List<KeyboardRow> keyboard = new ArrayList<>();
+        List<KeyboardRow> keyboard = new ArrayList<>(rowSize);
 
-        KeyboardRow keyboardFirstRow = new KeyboardRow();
+        KeyboardRow keyboardRow = new KeyboardRow();
+        keyboard.add(keyboardRow);
 
-        keyboardFirstRow.add(new KeyboardButton(PREV_PAGE));
-        keyboardFirstRow.add(new KeyboardButton(NEXT_PAGE));
+        for (District district : districtsByCity) {
+            if (keyboardRow.size() >= MAX_BUTTON_ENTRIES_PER_ROW) {
+                keyboardRow = new KeyboardRow();
+                keyboard.add(keyboardRow);
+            }
+            keyboardRow.add(new KeyboardButton(district.getName()));
+        }
+
 
         KeyboardRow backRow = new KeyboardRow();
-        backRow.add(new KeyboardButton(FIND));
         backRow.add(new KeyboardButton(BACK));
-
-        keyboard.add(keyboardFirstRow);
         keyboard.add(backRow);
 
         replyKeyboardMarkup.setKeyboard(keyboard);
 
         return SendMessage.builder()
                 .chatId("" + update.getMessage().getChatId())
-                .text(text.toString())
+                .text(update.getMessage().getFrom().getFirstName() + CHOOSE_DISTRICT_CAPTION)
                 .replyMarkup(replyKeyboardMarkup).build();
 
     }

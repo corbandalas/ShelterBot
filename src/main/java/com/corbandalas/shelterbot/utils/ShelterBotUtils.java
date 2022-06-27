@@ -2,14 +2,17 @@ package com.corbandalas.shelterbot.utils;
 
 import com.corbandalas.shelterbot.Application;
 import lombok.extern.slf4j.Slf4j;
+import org.reflections.Reflections;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,5 +38,14 @@ public class ShelterBotUtils {
 
     public static Double toRad(Double value) {
         return value * Math.PI / 180;
+    }
+
+    public static Set<Class<?>> getAnnotatedClasses(String packageName, Class<? extends Annotation> annotatedClass) {
+
+        Reflections reflectionPaths = new Reflections(packageName);
+
+        return reflectionPaths.getTypesAnnotatedWith(annotatedClass, true);
+
+
     }
 }

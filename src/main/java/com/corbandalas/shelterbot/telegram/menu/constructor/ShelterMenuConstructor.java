@@ -1,4 +1,4 @@
-package com.corbandalas.shelterbot.telegram.menu;
+package com.corbandalas.shelterbot.telegram.menu.constructor;
 
 import com.corbandalas.shelterbot.model.Shelter;
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
@@ -12,14 +12,14 @@ public interface ShelterMenuConstructor {
 
     PartialBotApiMethod menuConstruct(Update update, ShelterBotState shelterBotState);
 
-    default  String printShelterEntry(Shelter shelter) {
+    default String printShelterEntry(Shelter shelter) {
 
         StringBuilder builder = new StringBuilder(shelter.getAddress());
 
         builder.append(" ");
 
         if (StringUtils.isNotBlank(shelter.getCapacity())) {
-            builder.append("(" );
+            builder.append("(");
             builder.append(shelter.getCapacity());
             builder.append(" мест) ");
         }

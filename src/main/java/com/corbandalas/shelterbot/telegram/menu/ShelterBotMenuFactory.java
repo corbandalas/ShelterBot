@@ -1,85 +1,54 @@
 package com.corbandalas.shelterbot.telegram.menu;
 
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
+import com.corbandalas.shelterbot.telegram.ShelterBotStateEnum;
+import com.corbandalas.shelterbot.telegram.menu.constructor.ShelterMenuConstructor;
+import com.corbandalas.shelterbot.utils.ShelterBotUtils;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import static com.corbandalas.shelterbot.telegram.ShelterBotStateEnum.*;
+import java.util.List;
+import java.util.Set;
+
 
 @Singleton
 public class ShelterBotMenuFactory {
 
     @Inject
-    private MainMenuConstructor mainMenuConstructor;
-    @Inject
-    private CitySelectionMenuConstructor citySelectionMenuConstructor;
-    @Inject
-    private DistrictSelectionMenuConstructor districtSelectionMenuConstructor;
-    @Inject
-    private ShowDistrictSheltersMenuConstructor showDistrictSheltersMenuConstructor;
-    @Inject
-    private ShowSheltersListByGPSMenuConstructor showSheltersByGPSMenuConstructor;
-    @Inject
-    private ShowSheltersOnMapMenuConstructor showSheltersOnMapMenuConstructor;
-    @Inject
-    private AboutMenuConstructor aboutMenuConstructor;
-    @Inject
-    private HelpMenuConstructor helpMenuConstructor;
-    @Inject
-    private ShowRulesMenuConstructor showRulesMenuConstructor;
-    @Inject
-    private SearchEnterTextMenuConstructor searchEnterTextMenuConstructor;
-    @Inject
-    private SearchShowResultMenuConstructor searchShowResultMenuConstructor;
+    private List<ShelterMenuConstructor> menuConstructorBeansList;
+
 
     public PartialBotApiMethod menu(Update update, ShelterBotState shelterBotState) {
 
-        if (shelterBotState.getState().equals(MAIN_MENU)) {
-            return mainMenuConstructor.menuConstruct(update, shelterBotState);
-        }
 
-        if (shelterBotState.getState().equals(CITY_CHOOSE)) {
-            return citySelectionMenuConstructor.menuConstruct(update, shelterBotState);
-        }
+        ShelterMenuConstructor shelterMenuConstructor = getMenuConstructorBean(shelterBotState.getState());
 
-        if (shelterBotState.getState().equals(DISTRICT_CHOOSE)) {
-            return districtSelectionMenuConstructor.menuConstruct(update, shelterBotState);
-        }
 
-        if (shelterBotState.getState().equals(SHOW_SHELTERS_CITY_DISTRICT)) {
-            return showDistrictSheltersMenuConstructor.menuConstruct(update, shelterBotState);
-        }
-
-        if (shelterBotState.getState().equals(ABOUT)) {
-            return aboutMenuConstructor.menuConstruct(update, shelterBotState);
-        }
-        if (shelterBotState.getState().equals(HELP)) {
-            return helpMenuConstructor.menuConstruct(update, shelterBotState);
-        }
-
-        if (shelterBotState.getState().equals(SHOW_SHELTERS_BY_GPS)) {
-            return showSheltersByGPSMenuConstructor.menuConstruct(update, shelterBotState);
-        }
-
-        if (shelterBotState.getState().equals(SHOW_SHELTERS_ON_MAP_BY_GPS)) {
-            return showSheltersOnMapMenuConstructor.menuConstruct(update, shelterBotState);
-        }
-
-        if (shelterBotState.getState().equals(SHOW_RULE)) {
-
-            return showRulesMenuConstructor.menuConstruct(update, shelterBotState);
-        }
-
-        if (shelterBotState.getState().equals(SEARCH_ENTER)) {
-            return searchEnterTextMenuConstructor.menuConstruct(update, shelterBotState);
-        }
-
-        if (shelterBotState.getState().equals(SEARCH_RESULT)) {
-            return searchShowResultMenuConstructor.menuConstruct(update, shelterBotState);
-        }
+        if (shelterMenuConstructor != null)
+            return shelterMenuConstructor.menuConstruct(update, shelterBotState);
 
         throw new IllegalStateException("Wrong telegram bot state");
     }
+
+    private ShelterMenuConstructor getMenuConstructorBean(ShelterBotStateEnum shelterBotState) {
+
+        Set<Class<?>> annotatedClasses = ShelterBotUtils.getAnnotatedClasses("com.corbandalas.shelterbot.telegram.menu.constructor", ShelterBotMenuConstructorType.class);
+
+        for (Class classValue : annotatedClasses) {
+
+            ShelterBotMenuConstructorType annotation = (ShelterBotMenuConstructorType) classValue
+                    .getAnnotation(ShelterBotMenuConstructorType.class);
+
+            if (shelterBotState.equals(annotation.type())) {
+
+                return menuConstructorBeansList.stream().filter(t -> t.getClass().getName().equals(classValue.getName()))
+                        .findFirst().orElseThrow(() -> new IllegalStateException("Cannot find menu constructor bean"));
+            }
+        }
+
+        throw new IllegalStateException("Cannot find menu constructor bean");
+    }
+
 }

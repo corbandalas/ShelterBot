@@ -1,13 +1,13 @@
-package com.corbandalas.shelterbot.telegram.menu;
+package com.corbandalas.shelterbot.telegram.menu.constructor;
 
 import com.corbandalas.shelterbot.model.City;
-import com.corbandalas.shelterbot.model.District;
 import com.corbandalas.shelterbot.repository.CityRepository;
-import com.corbandalas.shelterbot.repository.DistrictRepository;
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
+import com.corbandalas.shelterbot.telegram.menu.ShelterBotMenuConstructorType;
 import io.micronaut.context.env.Environment;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -16,28 +16,29 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.*;
 
+import static com.corbandalas.shelterbot.telegram.ShelterBotStateEnum.CITY_CHOOSE;
 import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.BACK;
-import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.CHOOSE_DISTRICT_CAPTION;
+import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.CHOOSE_CITY_CAPTION;
 
+@Slf4j
 @Singleton
-public class DistrictSelectionMenuConstructor implements ShelterMenuConstructor {
+@ShelterBotMenuConstructorType(type = CITY_CHOOSE)
+public class CitySelectionMenuConstructor implements ShelterMenuConstructor {
+
+
+    @Inject
+    private CityRepository cityRepository;
 
     @Inject
     private Environment environment;
 
-    @Inject
-    private DistrictRepository districtRepository;
-
     @Override
     public SendMessage menuConstruct(Update update, ShelterBotState shelterBotState) {
-
 
         String defaultCountryName = environment.getProperty("shelterbot.db.defaultCountry", String.class).orElse("ДНР");
         String defaultRegionName = environment.getProperty("shelterbot.db.defaultRegion", String.class).orElse("Донбасс");
 
-        String city = shelterBotState.getData().get("city");
-
-        Set<District> districtsByCity = districtRepository.getDistrictsByCity(city, defaultRegionName, defaultCountryName).orElse(new HashSet<>());
+        Set<City> cities = cityRepository.getCitiesByRegion(defaultRegionName, defaultCountryName).orElse(new HashSet<>());
 
         // Создаем клавиуатуру
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
@@ -47,8 +48,9 @@ public class DistrictSelectionMenuConstructor implements ShelterMenuConstructor 
 
 
         int rowSize = 1;
-        if (districtsByCity.size() > 0) {
-            rowSize = districtsByCity.size() / MAX_BUTTON_ENTRIES_PER_ROW + 1;
+        log.info("cities.size()  = " + cities.size() );
+        if (cities.size() > 0) {
+            rowSize = cities.size() / MAX_BUTTON_ENTRIES_PER_ROW + 1;
         }
 
         // Создаем список строк клавиатуры
@@ -57,12 +59,12 @@ public class DistrictSelectionMenuConstructor implements ShelterMenuConstructor 
         KeyboardRow keyboardRow = new KeyboardRow();
         keyboard.add(keyboardRow);
 
-        for (District district : districtsByCity) {
+        for (City city : cities) {
             if (keyboardRow.size() >= MAX_BUTTON_ENTRIES_PER_ROW) {
                 keyboardRow = new KeyboardRow();
                 keyboard.add(keyboardRow);
             }
-            keyboardRow.add(new KeyboardButton(district.getName()));
+            keyboardRow.add(new KeyboardButton(city.getName()));
         }
 
 
@@ -73,9 +75,9 @@ public class DistrictSelectionMenuConstructor implements ShelterMenuConstructor 
         replyKeyboardMarkup.setKeyboard(keyboard);
 
         return SendMessage.builder()
-                .chatId("" + update.getMessage().getChatId())
-                .text(update.getMessage().getFrom().getFirstName() + CHOOSE_DISTRICT_CAPTION)
-                .replyMarkup(replyKeyboardMarkup).build();
-
+                        .chatId("" + update.getMessage().getChatId())
+                        .text(update.getMessage().getFrom().getFirstName() + CHOOSE_CITY_CAPTION)
+                        .replyMarkup(replyKeyboardMarkup).
+                build();
     }
 }

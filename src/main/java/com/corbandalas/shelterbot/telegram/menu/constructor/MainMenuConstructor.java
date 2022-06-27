@@ -1,6 +1,7 @@
-package com.corbandalas.shelterbot.telegram.menu;
+package com.corbandalas.shelterbot.telegram.menu.constructor;
 
 import com.corbandalas.shelterbot.telegram.ShelterBotState;
+import com.corbandalas.shelterbot.telegram.menu.ShelterBotMenuConstructorType;
 import jakarta.inject.Singleton;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -11,9 +12,11 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.corbandalas.shelterbot.telegram.ShelterBotStateEnum.MAIN_MENU;
 import static com.corbandalas.shelterbot.telegram.menu.ShelterBotTexts.*;
 
 @Singleton
+@ShelterBotMenuConstructorType(type = MAIN_MENU)
 public class MainMenuConstructor implements ShelterMenuConstructor {
 
     @Override

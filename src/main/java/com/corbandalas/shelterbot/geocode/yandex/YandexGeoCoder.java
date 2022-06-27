@@ -6,6 +6,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.http.uri.UriBuilder;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,6 +15,7 @@ import java.net.http.HttpResponse;
 
 @Singleton
 @Primary
+@Slf4j
 public class YandexGeoCoder implements GeoCoder {
 
     @Inject
@@ -27,6 +29,7 @@ public class YandexGeoCoder implements GeoCoder {
                 .queryParam("apikey", environment.getProperty("yandex.geo.key", String.class).orElseThrow())
                 .queryParam("format", "json")
                 .build();
+
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
